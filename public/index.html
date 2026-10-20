@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Wordbridge 字橋</title>
   <meta name="description" content="English ⇄ Traditional Chinese dictionary that works offline. 英漢（繁體）雙向離線詞典。">
-  <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0d1020" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f7fb">
   <meta name="color-scheme" content="light dark">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -17,10 +16,13 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="字橋">
   <script>
-    // Apply the saved theme before first paint to avoid a flash.
+    // Apply the saved theme before first paint to avoid a flash. Android takes the
+    // system navigation bar color from theme-color, so set it to match too.
     try {
       var th = localStorage.getItem('wb.theme');
       if (th === 'light' || th === 'dark') document.documentElement.dataset.theme = th;
+      var dark = th === 'dark' || (th !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) document.querySelector('meta[name="theme-color"]').content = '#0d1020';
     } catch (e) {}
   </script>
   <link rel="stylesheet" href="css/app.css">
