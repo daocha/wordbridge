@@ -1,0 +1,12 @@
+services:
+  dictionary:
+    build:
+      context: .
+      args:
+        DICT_LEVEL: ${DICT_LEVEL:-standard}
+        OPENCC_CONFIG: ${OPENCC_CONFIG:-s2tw}
+    image: wordbridge-dictionary:latest
+    container_name: wordbridge-dictionary
+    ports:
+      - "${PORT:-8080}:80"
+    restart: unless-stopped

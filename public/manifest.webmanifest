@@ -1,0 +1,29 @@
+{
+  "name": "Wordbridge 字橋 · English ⇄ 繁體中文",
+  "short_name": "字橋",
+  "description": "English ⇄ Traditional Chinese dictionary that works offline.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f7fb",
+  "theme_color": "#4f46e5",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "categories": ["education", "reference", "books"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "related_applications": [
+    { "platform": "webapp", "url": "manifest.webmanifest" }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    { "name": "Search", "short_name": "Search", "url": "./#/", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
