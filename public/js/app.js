@@ -889,12 +889,23 @@ const SHARE_ICON = '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1
 
 let installPrompt = null;
 let relatedInstalled = false;
+let promptWaitOver = false;
+const PROMPT_WAIT_MS = 6000;
+setTimeout(() => {
+  promptWaitOver = true;
+  renderInstall();
+}, PROMPT_WAIT_MS);
 
 function installState() {
   if (standaloneMq.matches || navigator.standalone === true) return 'standalone';
   if (installPrompt) return 'available';
   if (relatedInstalled || prefs.get('installed', '0') === '1') return 'installed';
   if (!window.isSecureContext) return 'insecure';
+  // Chromium fires beforeinstallprompt a few seconds after load (once the
+  // service worker is ready). Wait for it so the button installs in one click;
+  // fall back to manual steps only if it never comes (already installed, or
+  // the user dismissed Chrome's prompt before).
+  if (isChromiumDesktop && !promptWaitOver) return 'pending';
   if (isIOS || isMacSafari || isChromiumDesktop) return 'manual';
   return 'unsupported';
 }
