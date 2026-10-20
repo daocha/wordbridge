@@ -403,7 +403,7 @@ body:not(.is-home) .search-box { height: 50px; }
 
 /* ------------------------------------------------------------- results */
 
-.results { display: grid; gap: 16px; margin-top: 6px; }
+.results { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 6px; }
 
 .entry { padding: 22px 22px 18px; }
 .entry-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -522,6 +522,16 @@ body:not(.is-home) .search-box { height: 50px; }
 .related .g { color: var(--muted); }
 
 .not-found h2 { margin: 0 0 6px; font-size: 22px; }
+
+.web-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.web-list li { padding: 10px 4px; }
+.web-list li + li { border-top: 1px solid var(--border); }
+.web-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.web-head .zh { font-weight: 600; font-size: 22px; }
+.web-head .en { font-weight: 600; font-size: 17px; }
+.web .desc { color: var(--muted); font-size: 15px; margin-top: 2px; }
+.web-list .small { display: inline-block; margin-top: 4px; }
+.web-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
 
 .skeleton { height: 160px; position: relative; overflow: hidden; }
 .skeleton::before {
