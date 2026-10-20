@@ -890,7 +890,7 @@ const SHARE_ICON = '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1
 let installPrompt = null;
 let relatedInstalled = false;
 let promptWaitOver = false;
-const PROMPT_WAIT_MS = 6000;
+const PROMPT_WAIT_MS = 2500; // Chrome normally fires within ~1 s of load
 setTimeout(() => {
   promptWaitOver = true;
   renderInstall();
@@ -921,7 +921,7 @@ function renderInstall() {
 
 function showInstallHelp() {
   const steps = isIOS ? ['iosStep1', 'iosStep2', 'iosStep3']
-    : isChromiumDesktop ? (isEdge ? ['edgeStep1', 'chromeStep2', 'chromeStep3'] : ['chromeStep1', 'chromeStep2', 'chromeStep3'])
+    : isChromiumDesktop ? [isEdge ? 'edgeStep1' : 'chromeStep1', 'chromeStep2', 'chromeStep3', 'chromeStep4']
       : ['macStep1', 'macStep2'];
   $('#installSteps').replaceChildren(...steps.map((key) => {
     const [before, after = ''] = t(key).split('{icon}');

@@ -2,7 +2,7 @@
   "name": "Wordbridge 字橋 · English ⇄ 繁體中文",
   "short_name": "字橋",
   "description": "English ⇄ Traditional Chinese dictionary that works offline.",
-  "id": "./",
+  "id": "wordbridge",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
