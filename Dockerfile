@@ -30,6 +30,10 @@ RUN python /hash_assets.py /web
 # ---- Stage 3: static web server ----
 FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+# LOG_LEVEL=debug turns on per-request access logs; info (default) logs only startup and errors.
+ENV LOG_LEVEL=info
+COPY --chmod=755 docker/40-log-level.sh /docker-entrypoint.d/40-log-level.sh
+RUN mkdir -p /etc/nginx/snippets && echo 'access_log off;' > /etc/nginx/snippets/access_log.conf
 COPY --from=web /web/ /usr/share/nginx/html/
 COPY --from=data /out/data /usr/share/nginx/html/data
 EXPOSE 80

@@ -39,6 +39,12 @@ To deploy an update, pull and **rebuild**. A plain `docker compose up -d` reuses
 git pull && docker compose up -d --build
 ```
 
+Logging is set by `LOG_LEVEL` (`debug`, `info`, `warn`, `error`; default `info`). At `info` the container logs startup messages and errors only. Per-request access logs are written only at `debug`:
+
+```sh
+LOG_LEVEL=debug docker compose up -d
+```
+
 The image build fingerprints JS/CSS (`app.<hash>.js` via `scripts/hash_assets.py`), so browsers, the service worker and any proxy always fetch the new files. Hashed files are cached for a year as `immutable`. `index.html` and `sw.js` are always revalidated. Settings → About shows the running **App build** ID, so you can check what is deployed.
 
 Build options (environment variables or `.env`):
