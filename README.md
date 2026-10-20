@@ -58,6 +58,12 @@ location /dict/ {
 - The service worker (app shell offline, "Install" button) needs a **secure context**: HTTPS, or `localhost`. On plain `http://<ip>:<port>/` browsers disable service workers, but search and the offline dictionary download still work, because the data is stored in IndexedDB.
 - The downloaded dictionary is versioned. After you rebuild with new data, Settings shows "Update". Until you update, the old copy stays usable offline.
 
+### Install troubleshooting
+
+- **Desktop Chrome / Edge** may not fire the install prompt right away: they wait for some engagement, and suppress the prompt for months after it was dismissed once. The app then shows manual steps instead. Click the install icon in the address bar, or use ⋮ → Cast, save, and share → Install page as app.
+- To see why a page is not installable, open DevTools → **Application** → **Manifest** → *Installability*, and check **Service workers** to confirm `sw.js` is activated for the `/dict/` scope.
+- Plain `http://<ip>:<port>` is never installable. Android's "Add to Home screen" on such a page only creates a shortcut.
+
 ## Local development
 
 ```sh

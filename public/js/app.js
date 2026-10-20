@@ -875,6 +875,13 @@ const ua = navigator.userAgent;
 const isIOS = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
 const isMacSafari = !isIOS && /Macintosh/.test(ua) && /Version\/[\d.]+.*Safari\//.test(ua)
   && !/Chrome|Chromium|CriOS|Edg|Firefox|OPR/.test(ua);
+// Desktop Chrome / Edge install from the address bar or menu; they may hold back
+// beforeinstallprompt (engagement heuristics), so offer the manual steps too.
+const isEdge = /Edg\//.test(ua);
+const isChromiumDesktop = !isIOS && !/Android|Mobile/.test(ua)
+  && (navigator.userAgentData?.brands?.some((b) => /Chrome|Chromium|Edge/.test(b.brand)) ?? /Chrome\//.test(ua))
+  && !/OPR|Firefox/.test(ua);
+const INSTALL_ICON = '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 7.5v6m0 0-2.5-2.5M12 13.5l2.5-2.5"/>';
 const SHARE_ICON = '<path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/>';
 
 let installPrompt = null;
@@ -885,7 +892,7 @@ function installState() {
   if (installPrompt) return 'available';
   if (relatedInstalled || prefs.get('installed', '0') === '1') return 'installed';
   if (!window.isSecureContext) return 'insecure';
-  if (isIOS || isMacSafari) return 'manual';
+  if (isIOS || isMacSafari || isChromiumDesktop) return 'manual';
   return 'unsupported';
 }
 
@@ -899,10 +906,13 @@ function renderInstall() {
 }
 
 function showInstallHelp() {
-  const steps = isIOS ? ['iosStep1', 'iosStep2', 'iosStep3'] : ['macStep1', 'macStep2'];
+  const steps = isIOS ? ['iosStep1', 'iosStep2', 'iosStep3']
+    : isChromiumDesktop ? (isEdge ? ['edgeStep1', 'chromeStep2', 'chromeStep3'] : ['chromeStep1', 'chromeStep2', 'chromeStep3'])
+      : ['macStep1', 'macStep2'];
   $('#installSteps').replaceChildren(...steps.map((key) => {
     const [before, after = ''] = t(key).split('{icon}');
-    return h('li', {}, before, key === 'iosStep1' ? icon(SHARE_ICON) : null, after);
+    const ic = key === 'iosStep1' ? SHARE_ICON : /^(chrome|edge)Step1$/.test(key) ? INSTALL_ICON : null;
+    return h('li', {}, before, ic ? icon(ic) : null, after);
   }));
   $('#installHelp').showModal();
 }
