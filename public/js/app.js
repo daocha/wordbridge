@@ -3,6 +3,9 @@ import { F, OfflineMissError } from './data.js';
 import { t, setLang, resolveLang, getLang } from './i18n.js';
 
 const $ = (sel, el = document) => el.querySelector(sel);
+// Replaced with the build id by scripts/hash_assets.py in the Docker build.
+const BUILD = '__BUILD__';
+const buildId = BUILD.startsWith('__') ? 'dev' : BUILD;
 const root = document.documentElement;
 
 // ---------------------------------------------------------------- preferences
@@ -770,7 +773,7 @@ async function refreshOfflineStatus() {
     }
     rm.hidden = !st.storedFiles;
   }
-  $('#dataVersion').textContent = t('dataVersion', { v: st.version, count: fmtNum(st.count) });
+  $('#dataVersion').textContent = `${t('dataVersion', { v: st.version, count: fmtNum(st.count) })} · ${t('appBuild', { b: buildId })}`;
   try {
     const est = await navigator.storage?.estimate?.();
     $('#storageInfo').textContent = est?.usage ? t('storageUsed', { size: fmtMB(est.usage) }) : '';
