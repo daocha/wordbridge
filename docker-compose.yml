@@ -9,4 +9,6 @@ services:
     container_name: wordbridge-dictionary
     ports:
       - "${PORT:-8080}:80"
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     restart: unless-stopped
