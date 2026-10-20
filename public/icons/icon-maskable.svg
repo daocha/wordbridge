@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4F46E5"/>
+      <stop offset=".55" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".28" r=".6">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FCD34D"/>
+      <stop offset=".5" stop-color="#FDE68A"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <rect width="512" height="512" fill="url(#glow)"/>
+  <g transform="translate(256 252) scale(.78) translate(-256 -248)">
+  <!-- golden "bridge" arc linking the two languages -->
+  <path d="M164 178 Q256 70 348 178" fill="none" stroke="url(#gold)" stroke-width="13" stroke-linecap="round" stroke-dasharray="1 26" />
+  <path d="M164 178 Q256 70 348 178" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linecap="round" opacity=".55" />
+  <circle cx="164" cy="178" r="11" fill="#FBBF24"/>
+  <circle cx="348" cy="178" r="11" fill="#FBBF24"/>
+  <path d="M256 92 L264 116 L288 124 L264 132 L256 156 L248 132 L224 124 L248 116 Z" fill="#FEF3C7"/>
+  <!-- book -->
+  <path d="M90 392 C150 378 214 384 256 412 C298 384 362 378 422 392" fill="none" stroke="#1E1B4B" stroke-opacity=".35" stroke-width="16" stroke-linecap="round"/>
+  <path d="M256 398 C214 372 156 366 104 378 L104 204 C156 192 214 198 256 224 Z" fill="#FFFFFF"/>
+  <path d="M256 398 C298 372 356 366 408 378 L408 204 C356 192 298 198 256 224 Z" fill="#E0F2FE"/>
+  <path d="M256 224 L256 398" stroke="#1E1B4B" stroke-opacity=".18" stroke-width="4"/>
+  <!-- A -->
+  <g fill="none" stroke="#4338CA" stroke-width="17" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M146 338 L180 250 L214 338"/>
+    <path d="M160 306 L200 306"/>
+  </g>
+  <!-- 文 -->
+  <g fill="none" stroke="#0E7490" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M332 236 L334 250"/>
+    <path d="M294 264 L370 264"/>
+    <path d="M356 270 C346 302 324 324 294 336"/>
+    <path d="M308 270 C320 302 342 324 372 336"/>
+  </g>
+  </g>
+</svg>
