@@ -1,3 +1,5 @@
+<img src="wordbridge-banner.png" />
+
 # Wordbridge 字橋
 
 English ⇄ Traditional Chinese dictionary. Installable PWA, works fully offline, desktop and mobile friendly.
