@@ -397,11 +397,47 @@ async function missingDataNotice(err) {
     h('div', { class: 'row-btns' }, retry, download, settings));
 }
 
+/**
+ * Online fallback for a word the dictionary lacks (bitcoin, 區塊鏈…): names from
+ * Wikidata, filled in when they arrive, plus links to search elsewhere.
+ */
+function webCard(q) {
+  const zhQuery = data.isChinese(q);
+  const body = h('div', { class: 'web-body' }, h('p', { class: 'muted' }, t('webSearching')));
+  data.webLookup(q).then((results) => {
+    body.replaceChildren(results.length
+      ? h('ul', { class: 'web-list' }, results.map((r) => webItem(r, zhQuery)))
+      : h('p', { class: 'muted' }, t('webNone')));
+  }, (err) => {
+    if (!(err instanceof OfflineMissError)) console.error(err);
+    body.replaceChildren(h('p', { class: 'muted' }, t(navigator.onLine ? 'webError' : 'webOffline')));
+  });
+  return h('section', { class: 'card web' },
+    h('span', { class: 'label' }, t('webTitle')),
+    body,
+    h('div', { class: 'web-links small' },
+      h('span', { class: 'muted' }, t('webSearchOn')),
+      data.webSearchLinks(q).map((l) => h('a', { href: l.url, target: '_blank', rel: 'noopener' }, l.name))));
+}
+
+function webItem(r, zhQuery) {
+  // A Chinese query links the English name, which may be in the dictionary.
+  const en = zhQuery
+    ? h('a', { class: 'en', lang: 'en', href: wordHref(r.en) }, r.en)
+    : h('span', { class: 'en', lang: 'en' }, r.en);
+  return h('li', {},
+    h('div', { class: 'web-head' }, h('span', { class: 'zh', lang: 'zh-Hant' }, r.zh), en),
+    r.zhDesc && h('div', { class: 'desc', lang: 'zh-Hant' }, r.zhDesc),
+    r.enDesc && h('div', { class: 'desc', lang: 'en' }, r.enDesc),
+    h('a', { class: 'small', href: r.url, target: '_blank', rel: 'noopener' }, t('webArticle')));
+}
+
 async function renderEnglish(q) {
   const entries = await data.lookup(q);
   if (entries.length) return entries.slice(0, 4).map(renderEntry);
   const similar = await data.similar(q);
   return [
+    webCard(q),
     h('div', { class: 'card not-found' },
       h('h2', {}, t('notFound', { q })),
       similar.length
@@ -679,11 +715,12 @@ function renderEntry(e) {
 async function renderChinese(q) {
   const groups = await data.reverseLookup(q);
   if (!groups.length) {
-    return [h('div', { class: 'card not-found' }, h('h2', {}, t('notFound', { q })), h('p', { class: 'muted' }, t('noSuggestions')))];
+    return [webCard(q), h('div', { class: 'card not-found' }, h('h2', {}, t('notFound', { q })), h('p', { class: 'muted' }, t('noSuggestions')))];
   }
   const main = groups[0].exact ? groups[0] : null;
   const related = main ? groups.slice(1) : groups;
-  const nodes = [];
+  // No exact match, only longer terms starting with q: ask Wikipedia too.
+  const nodes = main ? [] : [webCard(q)];
 
   if (main) {
     const rows = main.words.map((w) => {

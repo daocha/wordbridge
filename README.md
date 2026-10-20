@@ -6,6 +6,7 @@ English ⇄ Traditional Chinese dictionary. Installable PWA, works fully offline
 
 - **Search** with live suggestions as you type, in English (prefix) or Chinese, Traditional or Simplified (reverse lookup: 蘋果 / 苹果 → apple)
 - **Entries** show British and American IPA, each with its own play button (device speech, en-GB / en-US), Collins stars / Oxford 3000 / exam tags, Chinese senses by part of speech, word forms, English definitions, and a "Did you mean" list for typos
+- **Newer words** (bitcoin, blockchain, metaverse, 區塊鏈…) that the dictionary lacks are looked up online in Wikidata, which gives the Traditional Chinese (Taiwan, or Hong Kong with `s2hk`) or English name, a short description and a Wikipedia link. Links to Wiktionary, Wikipedia and Google are shown too. Only the missed word is sent, results are kept on the device for 30 days and still show offline.
 - **Offline**: download the whole dictionary (~364k entries, ~18 MB) into the browser in Settings. Words you look up online are cached as you go. If you remove the offline copy, the app goes back to online lookups. When you're offline and a word isn't on the device, it says so and points you to the download.
 - **Install**: an Install button appears when the browser can install the app. On iOS and macOS Safari it shows step-by-step instructions. The app detects when it's already installed: running as the app, `getInstalledRelatedApps`, or the `appinstalled` event.
 - **Language**: English / 繁體中文 UI, following the system language by default

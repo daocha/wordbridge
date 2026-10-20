@@ -407,3 +407,100 @@ export async function similar(word, limit = 6) {
   }
   return out.sort((a, b) => a.d - b.d || a.r - b.r).slice(0, limit);
 }
+
+// ---------------------------------------------------------------- online fallback
+//
+// Newer words (bitcoin, blockchain, selfie…) are missing from ECDICT but usually
+// have a Wikipedia article, and Wikidata stores its name in each Chinese
+// variant. Only queried after a dictionary miss; results are kept in IndexedDB
+// so a word looked up once also works offline.
+
+const WIKIDATA = 'https://www.wikidata.org/w/api.php';
+const WEB_TTL = 30 * 86400000;
+const WEB_TIMEOUT = 8000;
+const ZH_HANT = ['zh-tw', 'zh-hant', 'zh-hk', 'zh-mo'];
+const ZH_OTHER = ['zh', 'zh-hans', 'zh-cn', 'zh-sg', 'zh-my']; // may be Simplified
+
+/** Wikipedia/Wikidata variant matching the dictionary's OpenCC config. */
+const zhVariant = () => (meta?.opencc === 's2hk' ? 'zh-hk' : 'zh-tw');
+
+async function wikidata(params) {
+  const url = new URL(WIKIDATA);
+  url.search = new URLSearchParams({ ...params, format: 'json', origin: '*' });
+  const res = await fetch(url, { signal: AbortSignal.timeout?.(WEB_TIMEOUT) });
+  if (!res.ok) throw new Error(`HTTP ${res.status} from Wikidata`);
+  return res.json();
+}
+
+/** Best Traditional Chinese value from Wikidata labels/descriptions. */
+async function zhValue(map = {}) {
+  const local = zhVariant();
+  for (const l of [local, ...ZH_HANT]) if (map[l]) return map[l].value;
+  for (const l of ZH_OTHER) if (map[l]) return (await chineseVariants(map[l].value, 1))[0];
+  return '';
+}
+
+async function searchWikidata(q) {
+  const lang = isChinese(q) ? 'zh' : 'en';
+  const found = await wikidata({ action: 'wbsearchentities', search: q, language: lang, uselang: lang, type: 'item', limit: 8 });
+  const ids = (found.search || []).map((s) => s.id);
+  if (!ids.length) return [];
+  const { entities = {} } = await wikidata({
+    action: 'wbgetentities', ids: ids.join('|'), props: 'labels|descriptions|sitelinks',
+    languages: [...ZH_HANT, ...ZH_OTHER, 'en'].join('|'), sitefilter: 'zhwiki',
+  });
+  const out = [];
+  const seen = new Set();
+  for (const [order, id] of ids.entries()) {
+    const e = entities[id];
+    const en = e?.labels?.en?.value;
+    const zh = e && (await zhValue(e.labels));
+    const key = `${en}|${zh}`.toLowerCase();
+    if (!en || !zh || seen.has(key)) continue;
+    seen.add(key);
+    const zhwiki = e.sitelinks?.zhwiki?.title;
+    out.push({
+      id, en, zh, order,
+      zhDesc: await zhValue(e.descriptions),
+      enDesc: e.descriptions?.en?.value || '',
+      url: zhwiki
+        ? `https://zh.wikipedia.org/${zhVariant()}/${encodeURIComponent(zhwiki.replace(/ /g, '_'))}`
+        : `https://www.wikidata.org/wiki/${id}`,
+      wiki: Boolean(zhwiki),
+    });
+  }
+  // Prefer topics with a Chinese Wikipedia article: "selfie" the photo over a 2014 film.
+  return out.sort((a, b) => b.wiki - a.wiki || a.order - b.order).slice(0, 4);
+}
+
+/**
+ * Online lookup for a word the dictionary lacks: [{ en, zh, zhDesc, enDesc, url }].
+ * Uses the stored result when it is recent, or whenever we are offline.
+ * Throws OfflineMissError when offline with nothing stored.
+ */
+export async function webLookup(input) {
+  const q = normalize(input);
+  const key = 'web:' + q.toLowerCase();
+  const cached = await kvGet(key);
+  if (cached && (!navigator.onLine || Date.now() - cached.at < WEB_TTL)) return cached.results;
+  if (!navigator.onLine) throw new OfflineMissError('web');
+  try {
+    const results = await searchWikidata(q);
+    kvSet(key, { at: Date.now(), results });
+    return results;
+  } catch (e) {
+    if (cached) return cached.results;
+    throw e;
+  }
+}
+
+/** Links to search the web for q (used when the dictionary has no entry). */
+export function webSearchLinks(q) {
+  const zh = isChinese(q);
+  const s = encodeURIComponent(q);
+  return [
+    { name: 'Wiktionary', url: `https://en.wiktionary.org/wiki/Special:Search?search=${s}` },
+    { name: 'Wikipedia', url: `https://zh.wikipedia.org/w/index.php?search=${s}&variant=${zhVariant()}` },
+    { name: 'Google', url: `https://www.google.com/search?q=${encodeURIComponent(q + (zh ? ' 英文' : ' 中文'))}` },
+  ];
+}
