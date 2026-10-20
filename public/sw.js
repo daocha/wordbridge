@@ -2,7 +2,9 @@
 // Dictionary data is stored by the page in IndexedDB (see js/data.js), so data/
 // requests are not cached here.
 
-const VERSION = 'wordbridge-v1';
+// __BUILD__ is replaced per Docker build (scripts/hash_assets.py), so every deploy
+// installs a new worker and drops the old cache.
+const VERSION = 'wordbridge-__BUILD__';
 const SHELL = [
   './',
   './index.html',

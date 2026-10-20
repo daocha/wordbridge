@@ -21,10 +21,16 @@ COPY scripts/build_dict.py .
 RUN python build_dict.py --csv ecdict.csv --out /out/data --level "${DICT_LEVEL}" --opencc "${OPENCC_CONFIG}" \
     --ipa-uk en_UK.txt --ipa-us en_US.txt
 
-# ---- Stage 2: static web server ----
+# ---- Stage 2: fingerprint JS/CSS for cache busting ----
+FROM python:3.12-slim AS web
+COPY public/ /web/
+COPY scripts/hash_assets.py /hash_assets.py
+RUN python /hash_assets.py /web
+
+# ---- Stage 3: static web server ----
 FROM nginx:1.27-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY public/ /usr/share/nginx/html/
+COPY --from=web /web/ /usr/share/nginx/html/
 COPY --from=data /out/data /usr/share/nginx/html/data
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO /dev/null http://127.0.0.1/data/meta.json || exit 1
