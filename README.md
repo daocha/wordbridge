@@ -70,6 +70,7 @@ location /dict/ {
 
 - **Desktop Chrome / Edge** may not fire the install prompt right away: they wait for some engagement, and suppress the prompt for months after it was dismissed once. The app then shows manual steps instead. Click the install icon in the address bar, or use ⋮ → Cast, save, and share → Install page as app.
 - To see why a page is not installable, open DevTools → **Application** → **Manifest** → *Installability*, and check **Service workers** to confirm `sw.js` is activated for the `/dict/` scope.
+- **Several apps on one domain** need distinct manifest `id`s. Chrome resolves `id` against the site's *origin*, not the app's folder, so two apps using `"id": "./"` at `example.com/fx/` and `example.com/dict/` both become `https://example.com/`. Once one is installed, Chrome treats the other as already installed and never offers it. Wordbridge uses `"id": "wordbridge"`. DevTools → Application → Manifest shows the computed App Id.
 - Plain `http://<ip>:<port>` is never installable. Android's "Add to Home screen" on such a page only creates a shortcut.
 
 ## Local development
