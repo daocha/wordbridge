@@ -61,7 +61,7 @@ function applyTheme() {
   if (pref === 'light' || pref === 'dark') root.dataset.theme = pref;
   else delete root.dataset.theme;
   const dark = pref === 'dark' || (pref === 'system' && darkMq.matches);
-  for (const m of document.querySelectorAll('meta[name="theme-color"]')) m.content = dark ? '#0d1020' : '#f6f7fb';
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#0d1020' : '#f6f7fb';
   const label = t('switchTheme', { mode: t(pref) });
   $('#themeBtn').title = label;
   $('#themeBtn').setAttribute('aria-label', label);
