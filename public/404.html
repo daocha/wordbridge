@@ -74,18 +74,30 @@
   </script>
 </head>
 <body>
-  <header><a class="brand" data-home href="/"><span class="mark" aria-hidden="true">字</span>Wordbridge</a></header>
+  <header><a class="brand" data-home href="./"><span class="mark" aria-hidden="true">字</span>Wordbridge</a></header>
   <main>
     <p class="code" aria-hidden="true">404</p>
     <h1>Page not found</h1>
     <p>The page you’re looking for doesn’t exist.</p>
     <p class="translation" lang="zh-Hant">找不到此頁面。請返回字橋首頁。</p>
-    <a class="home-link" data-home href="/">Back to Wordbridge · 返回字橋</a>
+    <a class="home-link" data-home href="./">Back to Wordbridge · 返回字橋</a>
   </main>
   <script>
-    if (location.pathname === '/dict' || location.pathname.startsWith('/dict/')) {
-      document.querySelectorAll('[data-home]').forEach(function (link) { link.href = '/dict/'; });
-    }
+    (async function () {
+      var links = document.querySelectorAll('[data-home]');
+      var directory = new URL('.', location.href);
+      while (true) {
+        try {
+          var response = await fetch(new URL('manifest.webmanifest', directory), { cache: 'no-cache' });
+          if (response.ok && (await response.json()).id === 'wordbridge') {
+            links.forEach(function (link) { link.href = directory.href; });
+            return;
+          }
+        } catch (e) {}
+        if (directory.pathname === '/') return;
+        directory = new URL('../', directory);
+      }
+    })();
   </script>
 </body>
 </html>
