@@ -12,6 +12,7 @@ English ⇄ Traditional Chinese dictionary. Installable PWA, works fully offline
 - **Language**: English / 繁體中文 UI, following the system language by default
 - **Theme**: light / dark, following the system setting by default
 - Works at `/` and under a sub-path such as `/dict/` (all URLs are relative)
+- Missing URLs return a branded 404 page with a link back to the dictionary, including when the app is offline.
 
 Data: [ECDICT](https://github.com/skywind3000/ECDICT) (MIT), converted to Traditional Chinese with [OpenCC](https://github.com/BYVoid/OpenCC). British and American IPA come from [ipa-dict](https://github.com/open-dict-data/ipa-dict) (MIT). Its espeak-style UK stress marks are moved to the start of the syllable, and the app falls back to ECDICT's phonetic when a UK entry is missing.
 
@@ -95,7 +96,7 @@ The front end is plain HTML/CSS/ES modules with no build step:
 
 ```
 public/
-  index.html, manifest.webmanifest, sw.js
+  index.html, 404.html, manifest.webmanifest, sw.js
   css/app.css
   js/app.js     UI, routing (#/w/<word>), settings, download
   js/data.js    shard lookup, suggestions, IndexedDB, offline download

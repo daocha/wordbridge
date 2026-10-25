@@ -8,6 +8,7 @@ const VERSION = 'wordbridge-__BUILD__';
 const SHELL = [
   './',
   './index.html',
+  './404.html',
   './css/app.css',
   './js/app.js',
   './js/data.js',
@@ -42,7 +43,7 @@ self.addEventListener('activate', (event) => {
 const scope = new URL(self.registration.scope);
 
 /** Network first (fresh when online), falling back to the cache when offline or slow. */
-async function networkFirst(request, cacheKey) {
+async function networkFirst(request, cacheKey, fallbackStatus = 200) {
   const cache = await caches.open(VERSION);
   const network = fetch(request).then((res) => {
     if (res.ok) cache.put(cacheKey, res.clone());
@@ -55,6 +56,9 @@ async function networkFirst(request, cacheKey) {
     if (res) return res;
   } catch { /* offline */ }
   const cached = await cache.match(cacheKey, { ignoreSearch: true });
+  if (cached && fallbackStatus !== 200) {
+    return new Response(cached.body, { status: fallbackStatus, headers: cached.headers });
+  }
   return cached || network;
 }
 
@@ -66,7 +70,11 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith(scope.pathname + 'data/')) return; // handled via IndexedDB
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, new URL('./index.html', scope).href));
+    const path = url.pathname.slice(scope.pathname.length);
+    const appPage = path === '' || path === 'index.html';
+    const fallback = appPage ? 'index.html' : '404.html';
+    event.respondWith(networkFirst(request, new URL(`./${fallback}`, scope).href,
+      appPage || path === '404.html' ? 200 : 404));
   } else {
     event.respondWith(networkFirst(request, request));
   }

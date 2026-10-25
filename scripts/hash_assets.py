@@ -33,7 +33,7 @@ def write(root, rel, text):
 
 def build_id(root):
     h = hashlib.sha1()
-    for rel in sorted(ASSETS + REFERRERS + ["manifest.webmanifest"]):
+    for rel in sorted(ASSETS + REFERRERS + ["404.html", "manifest.webmanifest"]):
         h.update(rel.encode())
         h.update(read(root, rel).encode())
     return h.hexdigest()[:10]

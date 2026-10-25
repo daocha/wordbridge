@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7fb">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <title>Page not found · Wordbridge 字橋</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --surface: #fff;
+      --text: #141629;
+      --muted: #5b6178;
+      --border: #e2e5ef;
+      --accent: #4f46e5;
+      --accent-ink: #fff;
+      --glow: rgba(79, 70, 229, .10);
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0d1020;
+        --surface: #161a2e;
+        --text: #e8eaf6;
+        --muted: #9aa0bd;
+        --border: #2a3050;
+        --accent: #8b87ff;
+        --accent-ink: #0d1020;
+        --glow: rgba(99, 102, 241, .16);
+        color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0d1020;
+      --surface: #161a2e;
+      --text: #e8eaf6;
+      --muted: #9aa0bd;
+      --border: #2a3050;
+      --accent: #8b87ff;
+      --accent-ink: #0d1020;
+      --glow: rgba(99, 102, 241, .16);
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background: radial-gradient(900px 480px at 50% -120px, var(--glow), transparent 70%), var(--bg);
+    }
+    header { padding: 16px max(20px, env(safe-area-inset-right)) 16px max(20px, env(safe-area-inset-left)); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 18px; font-weight: 700; text-decoration: none; }
+    .mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-size: 19px; }
+    main { width: min(100%, 620px); margin: auto; padding: 32px 20px 80px; text-align: center; }
+    .code { margin: 0; color: var(--accent); font-size: clamp(90px, 23vw, 160px); font-weight: 800; line-height: 1; letter-spacing: -.07em; }
+    h1 { margin: 16px 0 8px; font-size: clamp(28px, 6vw, 36px); line-height: 1.2; }
+    p { margin: 0; color: var(--muted); }
+    .translation { margin-top: 8px; }
+    .home-link { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 30px; padding: 0 22px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 650; text-decoration: none; }
+    .home-link:hover { filter: brightness(1.08); }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  </style>
+  <script>
+    try {
+      var theme = localStorage.getItem('wb.theme');
+      if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header><a class="brand" data-home href="/"><span class="mark" aria-hidden="true">字</span>Wordbridge</a></header>
+  <main>
+    <p class="code" aria-hidden="true">404</p>
+    <h1>Page not found</h1>
+    <p>The page you’re looking for doesn’t exist.</p>
+    <p class="translation" lang="zh-Hant">找不到此頁面。請返回字橋首頁。</p>
+    <a class="home-link" data-home href="/">Back to Wordbridge · 返回字橋</a>
+  </main>
+  <script>
+    if (location.pathname === '/dict' || location.pathname.startsWith('/dict/')) {
+      document.querySelectorAll('[data-home]').forEach(function (link) { link.href = '/dict/'; });
+    }
+  </script>
+</body>
+</html>
