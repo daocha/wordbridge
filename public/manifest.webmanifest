@@ -7,8 +7,11 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0d1020",
+  "background_color": "#f6f7fb",
   "theme_color": "#4f46e5",
+  "user_preferences": {
+    "color_scheme_dark": { "background_color": "#0d1020", "theme_color": "#0d1020" }
+  },
   "lang": "zh-Hant",
   "dir": "ltr",
   "categories": ["education", "reference", "books"],
